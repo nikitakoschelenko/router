@@ -1,0 +1,51 @@
+{
+  "name": "@itznevikat/router",
+  "version": "1.0.0",
+  "private": false,
+  "description": "🔪 Многофункциональный роутер для приложений на React и VKUI",
+  "source": "src/index.ts",
+  "types": "lib/index.d.ts",
+  "main": "lib/index.js",
+  "module": "lib/index.module.js",
+  "unpkg": "lib/index.umd.js",
+  "repository": "https://github.com/cteamdev/router",
+  "author": "Nikita Koshelenko <nikitakoschelenko@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "/lib"
+  ],
+  "scripts": {
+    "prebuild": "rimraf lib/",
+    "build": "microbundle --jsx React.createElement --no-sourcemap --compress"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.10.1",
+    "@typescript-eslint/parser": "^5.10.1",
+    "@vkontakte/vk-bridge": "^2.5.3",
+    "@vkontakte/vkui": "^4.25.2",
+    "eslint": "^8.8.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prefer-let": "^3.0.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.28.0",
+    "prettier": "^2.5.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.5.5"
+  },
+  "peerDependencies": {
+    "@vkontakte/vk-bridge": "^2.4.8",
+    "@vkontakte/vkui": "^4.22.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "dependencies": {
+    "history": "^5.2.0",
+    "microbundle": "^0.14.2",
+    "querystring": "^0.2.1",
+    "react-children-utilities": "^2.7.0"
+  }
+}
