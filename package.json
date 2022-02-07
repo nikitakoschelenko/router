@@ -8,7 +8,7 @@
   "main": "lib/index.js",
   "module": "lib/index.module.js",
   "unpkg": "lib/index.umd.js",
-  "repository": "https://github.com/cteamdev/router",
+  "repository": "https://github.com/ItzNeviKat/router",
   "author": "Nikita Koshelenko <nikitakoschelenko@gmail.com>",
   "license": "MIT",
   "files": [
