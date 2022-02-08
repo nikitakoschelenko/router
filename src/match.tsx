@@ -148,7 +148,10 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
   let navs: Nav[] = useMemo(() => extractLayoutsAsNavs(root), []);
 
   // set or detect style
-  config.style = config.style ?? useMemo(() => detectStyle(), []);
+  config.style = useMemo(
+    () => config.style ?? detectStyle(),
+    [config.style, document.body.clientWidth]
+  );
 
   // listen events and rerender
   useMemo(() => {
