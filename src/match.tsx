@@ -1,6 +1,7 @@
 import React, {
   Children,
   cloneElement,
+  createContext,
   FC,
   isValidElement,
   ReactNode,
@@ -13,7 +14,7 @@ import { ViewProps } from '@vkontakte/vkui';
 import { getNavId } from '@vkontakte/vkui/dist/lib/getNavId';
 
 import { NODE_ID_ATTRIBUTE } from './constants';
-import { AnyDict } from './types';
+import { AnyDict, StringDict } from './types';
 import { deserialize } from './utils/deserialize';
 import { createNodeID } from './utils/random';
 import { getNodeType } from './utils/node';
@@ -69,7 +70,7 @@ function renderRoute(
 ): ReactNode {
   let { pathname } = history.location;
 
-  let deserialized: AnyDict = deserialize(root, pathname);
+  let deserialized: StringDict = deserialize(root, pathname);
   if (Object.keys(deserialized).length === 0) {
     // not found
     console.warn('Route not found.');
@@ -94,6 +95,7 @@ function renderRoute(
       [key]: deserialized[nodeID] ?? '/'
     };
 
+    // swipeback on mobile
     if (type === 'view' && config.style === Style.MOBILE) {
       let nav: Nav = navs.find((nav) => nav.nodeID === nodeID)!;
 
@@ -104,6 +106,18 @@ function renderRoute(
     return cloneElement(node, props);
   })[0];
 }
+
+export type MatchContextValue = MatchConfig & {
+  root: ReactNode;
+  navs: Nav[];
+
+  // required
+  style: Style;
+};
+
+export const MatchContext = createContext<MatchContextValue>(
+  {} as MatchContextValue
+);
 
 export enum Style {
   MOBILE = 'MOBILE',
@@ -130,7 +144,7 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
 
     // history.listen returns unlisten function
     return history.listen(({ location: { pathname }, action }: Update) => {
-      let deserialized: AnyDict = deserialize(root, pathname);
+      let deserialized: StringDict = deserialize(root, pathname);
       let keys: string[] = Object.keys(deserialized);
 
       // not found
@@ -162,5 +176,17 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
   }, []);
 
   // render current route
-  return <>{renderRoute(root, navs, config)}</>;
+  return (
+    <MatchContext.Provider
+      value={
+        {
+          root,
+          navs,
+          ...config
+        } as MatchContextValue
+      }
+    >
+      {renderRoute(root, navs, config)}
+    </MatchContext.Provider>
+  );
 };

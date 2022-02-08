@@ -2,9 +2,9 @@ import { Children, isValidElement, ReactNode } from 'react';
 import { getNavId } from '@vkontakte/vkui/dist/lib/getNavId';
 
 import { NODE_ID_ATTRIBUTE } from '../constants';
-import { AnyDict } from '../types';
+import { StringDict } from '../types';
 
-export function deserialize(root: ReactNode, pathname: string): AnyDict {
+export function deserialize(root: ReactNode, pathname: string): StringDict {
   let deserialized: Record<string, string> = {};
   let chunks: string[] = pathname.split(/(?=\/)/);
 
