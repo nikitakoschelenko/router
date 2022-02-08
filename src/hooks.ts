@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { Action, Location } from 'history';
+import { Location } from 'history';
 import { AnyDict, StringDict } from './types';
 import { MatchContext } from './match';
 import { history, State } from './utils/history';
@@ -20,9 +20,7 @@ export function useParams<T extends StringDict>(): T {
   );
 
   useEffect(() => {
-    return history.listen(({ action }) => {
-      if (action === Action.Pop) rerender({});
-    });
+    return history.listen(rerender);
   }, []);
 
   return params as T;
@@ -38,9 +36,7 @@ export function useMeta<T extends AnyDict>(): T {
   );
 
   useEffect(() => {
-    return history.listen(({ action }) => {
-      if (action === Action.Pop) rerender({});
-    });
+    return history.listen(rerender);
   }, []);
 
   return meta as T;
