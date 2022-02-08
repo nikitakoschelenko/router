@@ -1,7 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Action } from 'history';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { Action, Location } from 'history';
 import { AnyDict, StringDict } from './types';
+import { MatchContext } from './match';
 import { history, State } from './utils/history';
+import { deserialize } from './utils/deserialize';
+import { NavNodeID, NavTransitionID } from './utils/navs';
 
 export function useParams<T extends StringDict>(): T {
   let rerender = useState<unknown>()[1];
@@ -41,4 +44,32 @@ export function useMeta<T extends AnyDict>(): T {
   }, []);
 
   return meta as T;
+}
+
+export function useLocation(): Location {
+  return history.location;
+}
+
+export function useDeserialized(): Record<'view' | 'panel' | string, string> {
+  let { root, navs } = useContext(MatchContext);
+
+  let deserialized: StringDict = useMemo(
+    () => deserialize(root, history.location.pathname),
+    [history.location.pathname]
+  );
+
+  let rootNodeID: NavNodeID =
+    navs.find(({ type }) => type === 'root' || type === 'epic')?.nodeID ?? '/';
+  let view: NavTransitionID = deserialized[rootNodeID] ?? '/';
+
+  let viewNodeID: NavNodeID =
+    navs.find(({ type, navID }) => type === 'view' && navID === view)?.nodeID ??
+    '/';
+  let panel: NavTransitionID = deserialized[viewNodeID] ?? '/';
+
+  return {
+    ...deserialized,
+    view,
+    panel
+  };
 }
