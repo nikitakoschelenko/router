@@ -6,6 +6,9 @@ import { history, State } from './utils/history';
 import { deserialize } from './utils/deserialize';
 import { NavNodeID, NavTransitionID } from './utils/navs';
 
+/**
+ * Hook to get current params
+ */
 export function useParams<T extends StringDict>(): T {
   let rerender = useState<unknown>()[1];
 
@@ -26,6 +29,9 @@ export function useParams<T extends StringDict>(): T {
   return params as T;
 }
 
+/**
+ * Hook to get current meta
+ */
 // TODO: problems with swipeback and animations
 export function useMeta<T extends AnyDict>(): T {
   let rerender = useState<unknown>()[1];
@@ -42,10 +48,16 @@ export function useMeta<T extends AnyDict>(): T {
   return meta as T;
 }
 
+/**
+ * Hook to get current location
+ */
 export function useLocation(): Location {
   return history.location;
 }
 
+/**
+ * Hook to get deserialized URL
+ */
 export function useDeserialized(): Record<'view' | 'panel' | string, string> {
   let { root, navs } = useContext(MatchContext);
 

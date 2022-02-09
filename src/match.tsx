@@ -127,21 +127,46 @@ export type MatchContextValue = MatchConfig & {
   style: Style;
 };
 
+/**
+ * Context with Match config and internal router props
+ */
 export const MatchContext = createContext<MatchContextValue>(
   {} as MatchContextValue
 );
 
+/**
+ * Navigation style
+ */
 export enum Style {
   MOBILE = 'MOBILE',
   DESKTOP = 'DESKTOP'
 }
 
+/**
+ * Config for Match component
+ */
 export type MatchConfig = {
+  /**
+   * Navigation style
+   */
   style?: Style;
+
+  /**
+   * Initial URL.
+   * if not specified, then the initial transition will not be executed
+   */
   initialURL?: string;
+
+  /**
+   * Fallback (404) URL.
+   * Will be used if the page is not found
+   */
   fallbackURL?: string;
 };
 
+/**
+ * Wrapper for VKUI navigation layers
+ */
 export const Match: FC<MatchConfig> = ({ children, ...config }) => {
   let rerender = useState<unknown>()[1];
 
