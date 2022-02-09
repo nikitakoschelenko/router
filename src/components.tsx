@@ -28,7 +28,10 @@ export const Root: FC<Omit<RootProps, 'activeView'>> = (props) => (
   <VKUIRoot {...props}>{props.children}</VKUIRoot>
 );
 
-export const Epic: FC<Omit<EpicProps, 'activeStory'>> = (props) => (
+export const Epic: FC<
+  // add nav prop
+  Omit<EpicProps, 'activeStory'> & Pick<RootProps, 'nav'>
+> = (props) => (
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   <VKUIEpic {...props}>{props.children}</VKUIEpic>
