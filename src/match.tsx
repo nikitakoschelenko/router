@@ -9,7 +9,7 @@ import React, {
   useState
 } from 'react';
 import { deepForEach, deepMap } from 'react-children-utilities';
-import { Action, Update } from 'history';
+import { Action, Listener, Update } from 'history';
 import { ViewProps } from '@vkontakte/vkui';
 import { getNavId } from '@vkontakte/vkui/dist/lib/getNavId';
 
@@ -138,6 +138,7 @@ export enum Style {
 
 export type MatchConfig = {
   style?: Style;
+  initialURL?: string;
   fallbackURL?: string;
 };
 
@@ -155,10 +156,7 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
 
   // listen events and rerender
   useMemo(() => {
-    history.replace('/');
-
-    // history.listen returns unlisten function
-    return history.listen(({ location: { pathname }, action }: Update) => {
+    let listener: Listener = ({ location: { pathname }, action }: Update) => {
       let deserialized: StringDict = deserialize(root, pathname);
       let keys: string[] = Object.keys(deserialized);
 
@@ -187,7 +185,21 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
       });
 
       rerender({});
-    });
+    };
+
+    let unlisten: VoidFunction = history.listen(listener);
+
+    if (config.initialURL) history.replace(config.initialURL);
+    else if (history.location.pathname !== '/') {
+      // manually trigger listener
+      listener({
+        action: Action.Replace,
+        location: history.location
+      } as Update);
+    }
+
+    // history.listen returns unlisten function
+    return unlisten;
   }, []);
 
   // render current route
