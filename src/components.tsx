@@ -35,9 +35,7 @@ export const Epic: FC<Omit<EpicProps, 'activeStory'>> = (props) => (
 );
 
 // modals
-export const ModalRoot: FC<Omit<ModalRootProps, 'activeModal' | 'onClose'>> = (
-  props
-) => {
+export const ModalRoot: FC<ModalRootProps> = (props) => {
   let { modal = null } = useParams();
 
   return (
