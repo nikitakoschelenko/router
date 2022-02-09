@@ -1,22 +1,27 @@
+import { Blocker } from 'history';
 import { AnyDict } from './types';
 import { history, State } from './utils/history';
 
 export function push(to: string, meta?: AnyDict): void {
-  history.push(to, { meta } as State);
+  return history.push(to, { meta } as State);
 }
 
 export function replace(to: string, meta?: AnyDict): void {
-  history.replace(to, { meta } as State);
+  return history.replace(to, { meta } as State);
 }
 
 export function back(): void {
-  history.back();
+  return history.back();
 }
 
 export function forward(): void {
-  history.forward();
+  return history.forward();
 }
 
 export function go(delta: number): void {
-  history.go(delta);
+  return history.go(delta);
+}
+
+export function block(blocker: Blocker): VoidFunction {
+  return history.block(blocker);
 }
