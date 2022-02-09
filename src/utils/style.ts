@@ -5,7 +5,7 @@ import { Style } from '../match';
 export function detectStyle(): Style {
   if (bridge.isEmbedded()) {
     let params: URLSearchParams = new URLSearchParams(location.search);
-    let platform: string | null = params.get('vk_platform') ?? 'desktop_web';
+    let platform: string = params.get('vk_platform') ?? 'desktop_web';
 
     return (
       {
