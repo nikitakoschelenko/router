@@ -5,6 +5,7 @@ import React, {
   FC,
   isValidElement,
   ReactNode,
+  useEffect,
   useMemo,
   useState
 } from 'react';
@@ -180,7 +181,7 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
   );
 
   // listen events and rerender
-  useMemo(() => {
+  useEffect(() => {
     let listener: Listener = ({ location: { pathname }, action }: Update) => {
       let deserialized: StringDict = deserialize(root, pathname);
       let keys: string[] = Object.keys(deserialized);
