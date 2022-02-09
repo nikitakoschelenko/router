@@ -72,14 +72,6 @@ function renderRoute(
   let { pathname } = history.location;
 
   let deserialized: StringDict = deserialize(root, pathname);
-  if (Object.keys(deserialized).length === 0) {
-    // not found
-    console.warn('Route not found.');
-
-    if (config.fallbackURL) history.replace(config.fallbackURL);
-
-    return;
-  }
 
   return deepMap(root, (node: ReactNode) => {
     if (!isValidElement(node)) return node;
@@ -187,7 +179,13 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
       let keys: string[] = Object.keys(deserialized);
 
       // not found
-      if (keys.length === 0) return;
+      if (keys.length === 0) {
+        console.warn('Route not found.');
+
+        if (config.fallbackURL) history.replace(config.fallbackURL);
+
+        return;
+      }
 
       navs.forEach(({ nodeID, transitions }) => {
         let activeNavID: string = deserialized[nodeID] ?? '/';
