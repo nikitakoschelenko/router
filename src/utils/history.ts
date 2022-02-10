@@ -1,7 +1,10 @@
-import history from 'history/hash';
-export { history };
+import { createHashHistory, HashHistory } from 'history';
 
 import { AnyDict } from '../types';
+
+export let history: HashHistory = createHashHistory({
+  window
+});
 
 export type State = {
   meta?: AnyDict;
