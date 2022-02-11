@@ -27,7 +27,11 @@ function markNodeIDs(root: ReactNode): ReactNode {
   return deepMap(root, (node: ReactNode) => {
     if (!isValidElement(node)) return node;
 
-    let navID: string | undefined = getNavId(node.props);
+    let { type, navID } = getNodeType(node);
+    if (type && !navID)
+      console.warn(
+        '[router] found known navigation layout but no `nav` property. Maybe you forgot about it?'
+      );
 
     // mark only VKUI elements
     if (!navID) return node;
@@ -45,11 +49,8 @@ function extractLayoutsAsNavs(root: ReactNode): Nav[] {
   deepForEach(root, (node: ReactNode) => {
     if (!isValidElement(node)) return;
 
-    let { type } = getNodeType(node);
-    if (!type) return;
-
-    let navID: string | undefined = getNavId(node.props);
-    if (!navID) return;
+    let { type, navID } = getNodeType(node);
+    if (!type || !navID) return;
 
     let availableTransitionIDs: NavTransitionID[] = Children.toArray(
       node.props.children
@@ -76,11 +77,8 @@ function renderRoute(
   return deepMap(root, (node: ReactNode) => {
     if (!isValidElement(node)) return node;
 
-    let nodeID: string | undefined = node.props[NODE_ID_ATTRIBUTE];
-    if (!nodeID) return node;
-
-    let { type, key } = getNodeType(node);
-    if (!type || !key) return node;
+    let { type, key, nodeID } = getNodeType(node);
+    if (!type || !key || !nodeID) return node;
 
     let props: AnyDict = {
       ...node.props,
@@ -180,7 +178,7 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
 
       // not found
       if (keys.length === 0) {
-        console.warn('Route not found.');
+        console.warn('[router] route not found.');
 
         if (config.fallbackURL) history.replace(config.fallbackURL);
 
