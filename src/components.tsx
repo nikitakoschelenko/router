@@ -61,9 +61,10 @@ export const PopoutRoot: FC = ({ children }) => {
 
   return (
     <>
-      {Children.toArray(children).find(
-        (node) => isValidElement(node) && getNavId(node.props) === popout
-      )}
+      {popout &&
+        Children.toArray(children).find(
+          (node) => isValidElement(node) && getNavId(node.props) === popout
+        )}
     </>
   );
 };
