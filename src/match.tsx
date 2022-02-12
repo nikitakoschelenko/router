@@ -187,7 +187,7 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
 
       navs.forEach(({ nodeID, transitions }) => {
         let activeNavID: string = deserialized[nodeID] ?? '/';
-        if (transitions.at(-1) === activeNavID) return;
+        if (transitions[transitions.length - 1] === activeNavID) return;
 
         if (action === Action.Push) transitions.push(activeNavID);
         if (action === Action.Replace) transitions.splice(-1, 1, activeNavID);
