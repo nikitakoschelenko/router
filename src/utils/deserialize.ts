@@ -1,8 +1,7 @@
 import { Children, isValidElement, ReactNode } from 'react';
 
-import { NODE_ID_ATTRIBUTE } from '../constants';
 import { StringDict } from '../types';
-import { getNodeType } from './node';
+import { getNavID, getNodeID } from './node';
 
 export function deserialize(root: ReactNode, pathname: string): StringDict {
   let deserialized: Record<string, string> = {};
@@ -13,8 +12,8 @@ export function deserialize(root: ReactNode, pathname: string): StringDict {
   function loop(node: ReactNode, parent: ReactNode): void {
     if (!isValidElement(node) || !isValidElement(parent)) return;
 
-    let { navID } = getNodeType(node);
-    let parentNodeID: string | undefined = parent.props[NODE_ID_ATTRIBUTE];
+    let navID: string | undefined = getNavID(node);
+    let parentNodeID: string | undefined = getNodeID(parent);
 
     if (navID && parentNodeID && currentWorkID === navID) {
       deserialized[parentNodeID] = navID;

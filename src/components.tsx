@@ -9,10 +9,11 @@ import {
   ModalRoot as VKUIModalRoot,
   ModalRootProps
 } from '@vkontakte/vkui';
-import { NavIdProps, getNavId } from '@vkontakte/vkui/dist/lib/getNavId';
+import { NavIdProps } from '@vkontakte/vkui/dist/lib/getNavId';
 
 import { useParams } from './hooks';
 import { back } from './router';
+import { getNavID } from './utils/node';
 
 // nav or id prop required
 type NavIdRequiredProps = Required<
@@ -63,7 +64,7 @@ export const PopoutRoot: FC = ({ children }) => {
     <>
       {popout &&
         Children.toArray(children).find(
-          (node) => isValidElement(node) && getNavId(node.props) === popout
+          (node) => isValidElement(node) && getNavID(node) === popout
         )}
     </>
   );

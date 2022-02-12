@@ -11,15 +11,26 @@ import React, {
 } from 'react';
 import { deepForEach, deepMap } from 'react-children-utilities';
 import { Action, Listener, Update } from 'history';
-import { ViewProps } from '@vkontakte/vkui';
-import { getNavId } from '@vkontakte/vkui/dist/lib/getNavId';
+import {
+  ViewProps,
+  View as VKUIView,
+  Root as VKUIRoot,
+  Epic as VKUIEpic
+} from '@vkontakte/vkui';
 
 import { NODE_ID_ATTRIBUTE } from './constants';
+import { View, Root, Epic } from './components';
 import { AnyDict, StringDict } from './types';
 import { deserialize } from './utils/deserialize';
 import { createNodeID } from './utils/random';
-import { getNodeType } from './utils/node';
-import { createNav, Nav, NavNodeID, NavTransitionID } from './utils/navs';
+import { getNavID, getNodeID } from './utils/node';
+import {
+  createNav,
+  Nav,
+  NavNodeID,
+  NavTransitionID,
+  NavType
+} from './utils/navs';
 import { detectStyle } from './utils/style';
 import { history } from './utils/history';
 
@@ -27,14 +38,30 @@ function markNodeIDs(root: ReactNode): ReactNode {
   return deepMap(root, (node: ReactNode) => {
     if (!isValidElement(node)) return node;
 
-    let { type, navID } = getNodeType(node);
-    if (type && !navID)
-      console.warn(
-        '[router] found known navigation layout but no `nav` property. Maybe you forgot about it?'
-      );
+    let navID: string | undefined = getNavID(node);
 
     // mark only VKUI elements
-    if (!navID) return node;
+    if (!navID) {
+      switch (node.type) {
+        case View:
+        case Root:
+        case Epic:
+          console.warn(
+            '[router] found known navigation layout but no `nav` property. Maybe you forgot about it?'
+          );
+          break;
+
+        case VKUIView:
+        case VKUIRoot:
+        case VKUIEpic:
+          console.warn(
+            '[router] use View, Root and Epic imported from the router to work correctly.'
+          );
+          break;
+      }
+
+      return node;
+    }
 
     return cloneElement(node, {
       ...node.props,
@@ -49,13 +76,31 @@ function extractLayoutsAsNavs(root: ReactNode): Nav[] {
   deepForEach(root, (node: ReactNode) => {
     if (!isValidElement(node)) return;
 
-    let { type, navID } = getNodeType(node);
-    if (!type || !navID) return;
+    let navID: string | undefined = getNavID(node);
+    if (!navID) return node;
+
+    let type: NavType;
+    switch (node.type) {
+      case View:
+        type = 'view';
+        break;
+
+      case Root:
+        type = 'root';
+        break;
+
+      case Epic:
+        type = 'epic';
+        break;
+
+      default:
+        return node;
+    }
 
     let availableTransitionIDs: NavTransitionID[] = Children.toArray(
       node.props.children
     )
-      .map((child) => isValidElement(child) && getNavId(child.props))
+      .map((child) => isValidElement(child) && getNavID(child.props))
       .filter((child) => child) as NavTransitionID[];
     let nodeID: NavNodeID = node.props[NODE_ID_ATTRIBUTE];
 
@@ -77,21 +122,38 @@ function renderRoute(
   return deepMap(root, (node: ReactNode) => {
     if (!isValidElement(node)) return node;
 
-    let { type, key, nodeID } = getNodeType(node);
-    if (!type || !key || !nodeID) return node;
+    let nodeID: string | undefined = getNodeID(node);
+    if (!nodeID) return node;
 
+    let value: string = deserialized[nodeID] ?? '/';
     let props: AnyDict = {
-      ...node.props,
-      // active prop
-      [key]: deserialized[nodeID] ?? '/'
+      ...node.props
     };
 
-    // swipeback on mobile
-    if (type === 'view' && config.style === Style.MOBILE) {
-      let nav: Nav = navs.find((nav) => nav.nodeID === nodeID)!;
+    switch (node.type) {
+      case View:
+        props.activePanel = value;
 
-      (props as ViewProps).history = nav.transitions;
-      (props as ViewProps).onSwipeBack = history.back;
+        // swipeback on mobile
+        if (config.style === Style.MOBILE) {
+          let nav: Nav = navs.find((nav) => nav.nodeID === nodeID)!;
+
+          (props as ViewProps).history = nav.transitions;
+          (props as ViewProps).onSwipeBack = history.back;
+        }
+
+        break;
+
+      case Root:
+        props.activeView = value;
+        break;
+
+      case Epic:
+        props.activeStory = value;
+        break;
+
+      default:
+        return node;
     }
 
     return cloneElement(node, props);
