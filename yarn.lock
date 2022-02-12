@@ -1254,9 +1254,9 @@
   integrity sha512-dOnRGhcKzCuex/RRTmi74uckqAQtGcVPhsKXSptmKz1/KqVt6WpmOT2rrr2rPyyWcfjHBbPwnF8A4Z0jkFz+Zg==
 
 "@vkontakte/vkui@^4.25.2":
-  version "4.25.2"
-  resolved "https://registry.yarnpkg.com/@vkontakte/vkui/-/vkui-4.25.2.tgz#336bbfa6b20e8c1414af3d201b12c8f896215950"
-  integrity sha512-gnWQtKAA3rgdLpCo22QipyIH04RayqmEZod9Hn3VQr90l/4GnLYHL/IroxAcWJlQ/0kekVcbQE83zbzTPOxm5w==
+  version "4.26.0"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vkui/-/vkui-4.26.0.tgz#ca4e0fbfb71310dcf81ef516ea97536168674007"
+  integrity sha512-9U/cWa+7Dh17IYJdpvUlJhGiio0ritbphPfeZF/7I1PIHIXAnRJlM5/vr3me0mMBR2fwvryhOogYj1FzhuJDIg==
   dependencies:
     "@babel/runtime" "^7.14.6"
     "@popperjs/core" "^2.9.2"
