@@ -7,7 +7,7 @@ import { deserialize } from './utils/deserialize';
 import { NavNodeID, NavTransitionID } from './utils/navs';
 
 /**
- * Hook to get current params
+ * Хук для получения параметров
  */
 export function useParams<T extends StringDict>(): T {
   let rerender = useState<unknown>()[1];
@@ -30,7 +30,7 @@ export function useParams<T extends StringDict>(): T {
 }
 
 /**
- * Hook to get current meta
+ * Хук для получения метаданных
  */
 // TODO: problems with swipeback and animations
 export function useMeta<T extends AnyDict>(): T {
@@ -49,14 +49,14 @@ export function useMeta<T extends AnyDict>(): T {
 }
 
 /**
- * Hook to get current location
+ * Хук для получения текущей локации
  */
 export function useLocation(): Location {
   return history.location;
 }
 
 /**
- * Hook to get deserialized URL
+ * Хук для получения активных свойств слоёв навигации
  */
 export function useDeserialized(): Record<'view' | 'panel' | string, string> {
   let { root, navs } = useContext(MatchContext);

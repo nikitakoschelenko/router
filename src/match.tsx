@@ -119,14 +119,14 @@ export type MatchContextValue = MatchConfig & {
 };
 
 /**
- * Context with Match config and internal router props
+ * Контекст с конфигом компонента Match и внутренними значениями роутера
  */
 export const MatchContext = createContext<MatchContextValue>(
   {} as MatchContextValue
 );
 
 /**
- * Navigation style
+ * Стиль навигации
  */
 export enum Style {
   MOBILE = 'MOBILE',
@@ -134,29 +134,29 @@ export enum Style {
 }
 
 /**
- * Config for Match component
+ * Конфиг для компонента Match
  */
 export type MatchConfig = {
   /**
-   * Navigation style
+   * Стиль навигации
    */
   style?: Style;
 
   /**
-   * Initial URL.
-   * if not specified, then the initial transition will not be executed
+   * Начальная страница.
+   * Если не указан, то при запуске не будет совершён переход
    */
   initialURL?: string;
 
   /**
-   * Fallback (404) URL.
-   * Will be used if the page is not found
+   * Страница 404.
+   * Будет использована, если страница при переходе не найдена
    */
   fallbackURL?: string;
 };
 
 /**
- * Wrapper for VKUI navigation layers
+ * Главный компонент роутера, в него оборачивается вся структура
  */
 export const Match: FC<MatchConfig> = ({ children, ...config }) => {
   let rerender = useState<unknown>()[1];
@@ -224,7 +224,7 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
     return unlisten;
   }, []);
 
-  // render current route
+  // provider for match context
   return (
     <MatchContext.Provider
       value={
@@ -235,7 +235,10 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
         } as MatchContextValue
       }
     >
+      {/* render css */}
       {renderCSS()}
+
+      {/* render current route */}
       {renderRoute(root, navs, config)}
     </MatchContext.Provider>
   );
