@@ -22,7 +22,6 @@ import { NODE_ID_ATTRIBUTE } from './constants';
 import { View, Root, Epic } from './components';
 import { AnyDict, StringDict } from './types';
 import { deserialize } from './utils/deserialize';
-import { createNodeID } from './utils/random';
 import { getNavID, getNodeID } from './utils/node';
 import {
   createNav,
@@ -33,6 +32,16 @@ import {
 } from './utils/navs';
 import { detectStyle } from './utils/style';
 import { history } from './utils/history';
+
+function createNodeID(node: ReactNode): string {
+  let key: string = '';
+
+  deepForEach(node, (node) => {
+    if (isValidElement(node)) key += node.key;
+  });
+
+  return key;
+}
 
 function markNodeIDs(root: ReactNode): ReactNode {
   return deepMap(root, (node: ReactNode) => {
@@ -65,7 +74,7 @@ function markNodeIDs(root: ReactNode): ReactNode {
 
     return cloneElement(node, {
       ...node.props,
-      [NODE_ID_ATTRIBUTE]: createNodeID()
+      [NODE_ID_ATTRIBUTE]: createNodeID(node)
     });
   })[0];
 }
@@ -223,7 +232,7 @@ export type MatchConfig = {
 export const Match: FC<MatchConfig> = ({ children, ...config }) => {
   let rerender = useState<unknown>()[1];
 
-  let root: ReactNode = useMemo(() => markNodeIDs(children), []);
+  let root: ReactNode = useMemo(() => markNodeIDs(children), [children]);
   let navs: Nav[] = useMemo(() => extractLayoutsAsNavs(root), []);
 
   // set or detect style
