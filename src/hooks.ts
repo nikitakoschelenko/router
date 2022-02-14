@@ -1,7 +1,11 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Location } from 'history';
+import { Platform, VKCOM } from '@vkontakte/vkui';
+
+import bridge from '@vkontakte/vk-bridge';
+
 import { AnyDict, StringDict } from './types';
-import { MatchContext } from './match';
+import { MatchContext, Style } from './match';
 import { history, State } from './utils/history';
 import { deserialize } from './utils/deserialize';
 import { NavNodeID, NavTransitionID } from './utils/navs';
@@ -80,4 +84,48 @@ export function useDeserialized(): Record<'view' | 'panel' | string, string> {
     view,
     panel
   };
+}
+
+/**
+ * Хук для определения платформы
+ */
+export function useVKPlatform(): Platform {
+  let platform: Platform = useMemo(() => {
+    if (bridge.isEmbedded()) {
+      let params: URLSearchParams = new URLSearchParams(location.search);
+      let vkPlatform: string | null = params.get('vk_platform');
+
+      if (vkPlatform) {
+        let resultPlatform: Platform | undefined = {
+          desktop_web: Platform.VKCOM,
+          mobile_android: Platform.ANDROID,
+          mobile_android_messenger: Platform.ANDROID,
+          mobile_ipad: Platform.IOS,
+          mobile_iphone: Platform.IOS,
+          mobile_iphone_messenger: Platform.IOS,
+          mobile_web: Platform.IOS,
+          android_external: Platform.ANDROID,
+          iphone_external: Platform.IOS,
+          ipad_external: Platform.IOS,
+          web_external: Platform.VKCOM,
+          mvk_external: Platform.IOS
+        }[vkPlatform];
+
+        if (resultPlatform) return resultPlatform;
+      }
+    }
+
+    return document.body.clientWidth >= 768 ? Platform.VKCOM : Platform.IOS;
+  }, [location.search, document.body.clientWidth]);
+
+  return platform;
+}
+
+/**
+ * Хук для получения текущего стиля навигации
+ */
+export function useStyle(): Style {
+  let platform: Platform = useVKPlatform();
+
+  return platform === VKCOM ? Style.DESKTOP : Style.MOBILE;
 }

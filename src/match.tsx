@@ -20,6 +20,7 @@ import {
 
 import { NODE_ID_ATTRIBUTE } from './constants';
 import { View, Root, Epic } from './components';
+import { useStyle } from './hooks';
 import { AnyDict, StringDict } from './types';
 import { deserialize } from './utils/deserialize';
 import { getNavID, getNodeID } from './utils/node';
@@ -30,7 +31,6 @@ import {
   NavTransitionID,
   NavType
 } from './utils/navs';
-import { detectStyle } from './utils/style';
 import { history } from './utils/history';
 
 function createNodeID(node: ReactNode): string {
@@ -236,8 +236,7 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
   let navs: Nav[] = useMemo(() => extractLayoutsAsNavs(root), []);
 
   // set or detect style
-  config.style =
-    config.style ?? useMemo(() => detectStyle(), [document.body.clientWidth]);
+  config.style = config.style ?? useStyle();
 
   // listen events and rerender
   useEffect(() => {
