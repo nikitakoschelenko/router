@@ -32,6 +32,7 @@ import {
   NavType
 } from './utils/navs';
 import { history } from './utils/history';
+import { setLocation } from './utils/bridge';
 
 function createNodeID(node: ReactNode): string {
   let key: string = '';
@@ -209,7 +210,8 @@ export enum Style {
  */
 export type MatchConfig = {
   /**
-   * Стиль навигации
+   * Стиль навигации.
+   * По умолчанию определяется автоматически (хуки useStyle и useVKPlatform)
    */
   style?: Style;
 
@@ -224,6 +226,12 @@ export type MatchConfig = {
    * Будет использована, если страница при переходе не найдена
    */
   fallbackURL?: string;
+
+  /**
+   * Отключает отправку события VKWebAppSetLocation для установки хэша в WebView.
+   * По умолчанию выключено, событие отправляется
+   */
+  disableSetLocation?: boolean;
 };
 
 /**
@@ -240,8 +248,8 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
 
   // listen events and rerender
   useEffect(() => {
-    let listener: Listener = ({ location: { pathname }, action }: Update) => {
-      let deserialized: StringDict = deserialize(root, pathname);
+    let listener: Listener = ({ location, action }: Update) => {
+      let deserialized: StringDict = deserialize(root, location.pathname);
       let keys: string[] = Object.keys(deserialized);
 
       // not found
@@ -273,6 +281,9 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
           }
         }
       });
+
+      // set parent page location hash with vk bridge
+      if (!config.disableSetLocation) setLocation(location);
 
       rerender({});
     };
