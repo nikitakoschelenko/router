@@ -228,7 +228,7 @@ export type MatchConfig = {
   fallbackURL?: string;
 
   /**
-   * Отключает отправку события VKWebAppSetLocation для установки хэша в WebView.
+   * Отключает отправку события VKWebAppSetLocation для установки хэша вне фрейма.
    * По умолчанию выключено, событие отправляется
    */
   disableSetLocation?: boolean;
