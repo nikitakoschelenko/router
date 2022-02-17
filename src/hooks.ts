@@ -1,4 +1,12 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import {
+  MouseEvent,
+  MouseEventHandler,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { Location } from 'history';
 import { Platform, VKCOM } from '@vkontakte/vkui';
 
@@ -84,6 +92,32 @@ export function useDeserialized(): Record<'view' | 'panel' | string, string> {
     view,
     panel
   };
+}
+
+let actionRef: Element | null = null;
+
+/**
+ * Хук для удобной работы с рефами при использовании ActionSheet
+ * @param handler обработчик при установке рефа, в нём нужно делать переход к ActionSheet. Не используется в самом ActionSheet при получении рефа
+ */
+export function useActionRef(handler?: (e: Element | null) => void) {
+  let setActionRef = useCallback(
+    (el: Element | null) => {
+      actionRef = el;
+      if (handler) handler(actionRef);
+    },
+    [handler]
+  );
+
+  let setActionRefHandler: MouseEventHandler<HTMLElement> = useCallback(
+    (e: MouseEvent<HTMLElement> | undefined) => {
+      actionRef = e?.target as Element;
+      if (handler) handler(actionRef);
+    },
+    [handler]
+  );
+
+  return { actionRef, setActionRef, setActionRefHandler };
 }
 
 /**
