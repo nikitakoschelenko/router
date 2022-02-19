@@ -1,4 +1,4 @@
-import React, { Children, FC, isValidElement } from 'react';
+import React, { FC } from 'react';
 import {
   View as VKUIView,
   ViewProps,
@@ -13,7 +13,6 @@ import { NavIdProps } from '@vkontakte/vkui/dist/lib/getNavId';
 
 import { useParams } from './hooks';
 import { back } from './router';
-import { getNavID } from './utils/node';
 
 // nav or id prop required
 type NavIdRequiredProps = Required<
@@ -53,19 +52,5 @@ export const ModalRoot: FC<ModalRootProps> = (props) => {
     <VKUIModalRoot activeModal={modal} onClose={back} {...props}>
       {props.children}
     </VKUIModalRoot>
-  );
-};
-
-// popouts
-export const PopoutRoot: FC = ({ children }) => {
-  let { popout = null } = useParams();
-
-  return (
-    <>
-      {popout &&
-        Children.toArray(children).find(
-          (node) => isValidElement(node) && getNavID(node) === popout
-        )}
-    </>
   );
 };

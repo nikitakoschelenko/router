@@ -170,18 +170,6 @@ function renderRoute(
   })[0];
 }
 
-function renderCSS() {
-  return (
-    <style>{`
-      .vkuiView__popout:empty,
-      .vkuiPopoutRoot__popout:empty,
-      .vkuiPopoutRoot--absolute:empty {
-        display: none;
-      }
-    `}</style>
-  );
-}
-
 export type MatchContextValue = MatchConfig & {
   root: ReactNode;
   navs: Nav[];
@@ -313,9 +301,6 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
         } as MatchContextValue
       }
     >
-      {/* render css */}
-      {renderCSS()}
-
       {/* render current route */}
       {renderRoute(root, navs, config)}
     </MatchContext.Provider>
