@@ -44,18 +44,11 @@ export function useParams<T extends StringDict>(): T {
 /**
  * Хук для получения метаданных
  */
-// TODO: problems with swipeback and animations
 export function useMeta<T extends AnyDict>(): T {
-  let rerender = useState<unknown>()[1];
-
   let meta: AnyDict = useMemo(
     () => (history.location.state as State<T>)?.meta ?? {},
-    [history.location.state]
+    []
   );
-
-  useEffect(() => {
-    return history.listen(rerender);
-  }, []);
 
   return meta as T;
 }
