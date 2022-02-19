@@ -10,7 +10,7 @@ import React, {
   useState
 } from 'react';
 import { deepForEach, deepMap } from 'react-children-utilities';
-import { Action, Listener, Update } from 'history';
+import { Action, Listener, Update, createPath } from 'history';
 import {
   ViewProps,
   View as VKUIView,
@@ -292,11 +292,10 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
 
     if (config.initialURL) history.replace(config.initialURL);
     else if (history.location.pathname !== '/') {
-      // manually trigger listener
-      listener({
-        action: Action.Replace,
-        location: history.location
-      } as Update);
+      let nextURL: string = createPath(history.location);
+
+      history.replace('/');
+      history.push(nextURL);
     }
 
     // history.listen returns unlisten function
