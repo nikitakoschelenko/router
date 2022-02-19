@@ -7,8 +7,8 @@ import { history, State } from './utils/history';
  * @param to URL новой страницы
  * @param meta метаданные
  */
-export function push(to: string, meta?: AnyDict): void {
-  return history.push(to, { meta } as State);
+export function push<T extends AnyDict>(to: string, meta?: T): void {
+  return history.push(to, { meta } as State<T>);
 }
 
 /**
@@ -16,8 +16,8 @@ export function push(to: string, meta?: AnyDict): void {
  * @param to URL новой страницы
  * @param meta метаданные
  */
-export function replace(to: string, meta?: AnyDict): void {
-  return history.replace(to, { meta } as State);
+export function replace<T extends AnyDict>(to: string, meta?: T): void {
+  return history.replace(to, { meta } as State<T>);
 }
 
 /**

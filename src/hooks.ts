@@ -49,7 +49,7 @@ export function useMeta<T extends AnyDict>(): T {
   let rerender = useState<unknown>()[1];
 
   let meta: AnyDict = useMemo(
-    () => (history.location.state as State)?.meta ?? {},
+    () => (history.location.state as State<T>)?.meta ?? {},
     [history.location.state]
   );
 

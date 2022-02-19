@@ -6,6 +6,6 @@ export let history: HashHistory = createHashHistory({
   window
 });
 
-export type State = {
-  meta?: AnyDict;
+export type State<T extends AnyDict> = {
+  meta?: T;
 };
