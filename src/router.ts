@@ -1,4 +1,4 @@
-import { Blocker } from 'history';
+import { Blocker, Listener } from 'history';
 import { AnyDict } from './types';
 import { history, State } from './utils/history';
 
@@ -49,4 +49,13 @@ export function go(delta: number): void {
  */
 export function block(blocker: Blocker): VoidFunction {
   return history.block(blocker);
+}
+
+/**
+ * Прослушка событий навигации
+ * @param listener слушатель
+ * @returns функция для остановки слушателя
+ */
+export function listen(listener: Listener): VoidFunction {
+  return history.listen(listener);
 }
