@@ -7,5 +7,6 @@ export let history: HashHistory = createHashHistory({
 });
 
 export type State<T extends AnyDict> = {
+  forcePush?: boolean;
   meta?: T;
 };

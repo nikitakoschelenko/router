@@ -21,7 +21,7 @@ import {
 import { NODE_ID_ATTRIBUTE } from './constants';
 import { View, Root, Epic } from './components';
 import { useStyle } from './hooks';
-import { AnyDict, StringDict } from './types';
+import { AnyDict, FallbackMeta, StringDict } from './types';
 import { deserialize } from './utils/deserialize';
 import { getNavID, getNodeID } from './utils/node';
 import {
@@ -31,7 +31,7 @@ import {
   NavTransitionID,
   NavType
 } from './utils/navs';
-import { history } from './utils/history';
+import { history, State } from './utils/history';
 import { setLocation } from './utils/bridge';
 
 function createNodeID(node: ReactNode): string {
@@ -237,6 +237,7 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
   // listen events and rerender
   useEffect(() => {
     let listener: Listener = ({ location, action }: Update) => {
+      let state: State<any> | undefined = location.state as State<any>;
       let deserialized: StringDict = deserialize(root, location.pathname);
       let keys: string[] = Object.keys(deserialized);
 
@@ -244,10 +245,17 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
       if (keys.length === 0) {
         console.warn('[router] route not found.');
 
-        if (config.fallbackURL) history.replace(config.fallbackURL);
-
-        return;
+        if (config.fallbackURL)
+          return history.replace(config.fallbackURL, {
+            forcePush: true,
+            meta: {
+              from: createPath(location),
+              meta: state.meta
+            }
+          } as State<FallbackMeta<any>>);
       }
+
+      if (state?.forcePush) action = Action.Push;
 
       navs.forEach(({ nodeID, transitions }) => {
         let activeNavID: string = deserialized[nodeID] ?? '/';
