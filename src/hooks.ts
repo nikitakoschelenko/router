@@ -8,7 +8,7 @@ import {
   useState
 } from 'react';
 import { Location } from 'history';
-import { Platform, VKCOM } from '@vkontakte/vkui';
+import { Platform, SizeType, useAdaptivity, VKCOM } from '@vkontakte/vkui';
 
 import bridge from '@vkontakte/vk-bridge';
 
@@ -117,6 +117,8 @@ export function useActionRef(handler?: (e: Element | null) => void) {
  * Хук для определения платформы
  */
 export function useVKPlatform(): Platform {
+  let { sizeX } = useAdaptivity();
+
   let platform: Platform = useMemo(() => {
     if (bridge.isEmbedded()) {
       let params: URLSearchParams = new URLSearchParams(location.search);
@@ -142,8 +144,8 @@ export function useVKPlatform(): Platform {
       }
     }
 
-    return document.body.clientWidth >= 768 ? Platform.VKCOM : Platform.IOS;
-  }, [location.search, document.body.clientWidth]);
+    return sizeX === SizeType.COMPACT ? Platform.VKCOM : Platform.IOS;
+  }, [location.search, sizeX]);
 
   return platform;
 }
