@@ -144,7 +144,7 @@ export function useVKPlatform(): Platform {
       }
     }
 
-    return sizeX === SizeType.COMPACT ? Platform.VKCOM : Platform.IOS;
+    return sizeX === SizeType.REGULAR ? Platform.VKCOM : Platform.IOS;
   }, [location.search, sizeX]);
 
   return platform;
