@@ -117,7 +117,7 @@ export function useActionRef(handler?: (e: Element | null) => void) {
  * Хук для определения платформы
  */
 export function useVKPlatform(): Platform {
-  let { sizeX } = useAdaptivity();
+  let { sizeX, viewWidth } = useAdaptivity();
 
   let platform: Platform = useMemo(() => {
     if (bridge.isEmbedded()) {
@@ -144,8 +144,11 @@ export function useVKPlatform(): Platform {
       }
     }
 
-    return sizeX === SizeType.REGULAR ? Platform.VKCOM : Platform.IOS;
-  }, [location.search, sizeX]);
+    // without AdaptivityProvider always viewWidth is 0 and sizeX is COMPACT so fix that
+    return !viewWidth || sizeX === SizeType.REGULAR
+      ? Platform.VKCOM
+      : Platform.IOS;
+  }, [location.search, viewWidth, sizeX]);
 
   return platform;
 }
