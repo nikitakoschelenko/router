@@ -8,7 +8,7 @@
 - 📭 Роутер весит всего [~3.7kB](https://bundlephobia.com/package/@itznevikat/router@0.1.0-beta12).
 
 ## Документация
-Подробную документацию можно найти в [Wiki](https://github.com/ItzNeviKat/router/wiki).
+Подробную документацию можно найти в [Wiki](https://github.com/ItzNeviKat/router/wiki/1.-%D0%91%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9-%D1%81%D1%82%D0%B0%D1%80%D1%82).
 
 ## Лицензия
 [MIT](LICENSE)
