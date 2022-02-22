@@ -1,6 +1,6 @@
 {
   "name": "@itznevikat/router",
-  "version": "0.1.0-beta12",
+  "version": "0.1.0-beta13",
   "private": false,
   "description": "📦 Многофункциональный роутер для приложений на React и VKUI",
   "source": "src/index.ts",
