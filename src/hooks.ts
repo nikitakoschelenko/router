@@ -145,10 +145,12 @@ export function useVKPlatform(): Platform {
     }
 
     // without AdaptivityProvider always viewWidth is 0 and sizeX is COMPACT so fix that
-    return !viewWidth || sizeX === SizeType.REGULAR
+    return (
+      viewWidth ? sizeX === SizeType.REGULAR : document.body.clientWidth > 650
+    )
       ? Platform.VKCOM
       : Platform.IOS;
-  }, [location.search, viewWidth, sizeX]);
+  }, [location.search, viewWidth ? sizeX : document.body.clientWidth]);
 
   return platform;
 }
