@@ -7,6 +7,7 @@ import React, {
   ReactNode,
   useEffect,
   useMemo,
+  useRef,
   useState
 } from 'react';
 import { deepForEach, deepMap } from 'react-children-utilities';
@@ -121,13 +122,12 @@ function extractLayoutsAsNavs(root: ReactNode): Nav[] {
 }
 
 function renderRoute(
+  route: string,
   root: ReactNode,
   navs: Nav[],
   config: Omit<MatchConfig, 'plugins'>
 ): ReactNode {
-  let { pathname } = history.location;
-
-  let deserialized: StringDict = deserialize(root, pathname);
+  let deserialized: StringDict = deserialize(root, route);
 
   return deepMap(root, (node: ReactNode) => {
     if (!isValidElement(node)) return node;
@@ -227,9 +227,14 @@ export type MatchConfig = {
  */
 export const Match: FC<MatchConfig> = ({ children, ...config }) => {
   let rerender = useState<unknown>()[1];
+  let frender = useRef(true);
 
   let root: ReactNode = useMemo(() => markNodeIDs(children), [children]);
   let navs: Nav[] = useMemo(() => extractLayoutsAsNavs(root), []);
+
+  let route: string = frender.current
+    ? config.initialURL ?? history.location.pathname
+    : history.location.pathname;
 
   // set or detect style
   config.style = config.style ?? useStyle();
@@ -237,7 +242,9 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
   // listen events and rerender
   useEffect(() => {
     let listener: Listener = ({ location, action }: Update) => {
-      let state: State<any> | undefined = location.state as State<any>;
+      let state: State<any> | undefined = location.state as
+        | State<any>
+        | undefined;
       let deserialized: StringDict = deserialize(root, location.pathname);
       let keys: string[] = Object.keys(deserialized);
 
@@ -250,7 +257,7 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
             forcePush: true,
             meta: {
               from: createPath(location),
-              meta: state.meta
+              meta: state?.meta
             }
           } as State<FallbackMeta<any>>);
       }
@@ -286,13 +293,18 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
 
     let unlisten: VoidFunction = history.listen(listener);
 
-    if (config.initialURL) history.replace(config.initialURL);
-    else if (history.location.pathname !== '/') {
+    if (config.initialURL) {
+      route = config.initialURL;
+      history.replace(config.initialURL);
+    } else if (history.location.pathname !== '/') {
       let nextURL: string = createPath(history.location);
 
       history.replace('/');
       history.push(nextURL);
     }
+
+    // set is first render to false
+    frender.current = false;
 
     // history.listen returns unlisten function
     return unlisten;
@@ -310,7 +322,7 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
       }
     >
       {/* render current route */}
-      {renderRoute(root, navs, config)}
+      {renderRoute(route, root, navs, config)}
     </MatchContext.Provider>
   );
 };
