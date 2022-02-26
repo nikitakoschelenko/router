@@ -11,6 +11,13 @@
   "repository": "https://github.com/ItzNeviKat/router",
   "author": "Nikita Koshelenko <nikitakoschelenko@gmail.com>",
   "license": "MIT",
+  "keywords": [
+    "react",
+    "router",
+    "vkontakte",
+    "vkui",
+    "vkminiapps"
+  ],
   "files": [
     "/lib"
   ],
