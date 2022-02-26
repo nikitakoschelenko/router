@@ -28,16 +28,16 @@
   "devDependencies": {
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
-    "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
-    "@vkontakte/icons": "^1.145.0",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
+    "@vkontakte/icons": "^1.145.1",
     "@vkontakte/vk-bridge": "^2.5.3",
-    "@vkontakte/vkui": "^4.27.0",
-    "eslint": "^8.9.0",
+    "@vkontakte/vkui": "^4.27.1",
+    "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-prefer-let": "^3.0.1",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react": "^7.29.2",
     "microbundle": "^0.14.2",
     "prettier": "^2.5.1",
     "react": "^17.0.2",
@@ -47,12 +47,12 @@
   },
   "peerDependencies": {
     "@vkontakte/vk-bridge": "^2.5.3",
-    "@vkontakte/vkui": "^4.27.0",
+    "@vkontakte/vkui": "^4.27.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "dependencies": {
-    "history": "^5.2.0",
+    "history": "^5.3.0",
     "react-children-utilities": "^2.7.0"
   }
 }
