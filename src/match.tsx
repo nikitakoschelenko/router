@@ -4,6 +4,7 @@ import React, {
   createContext,
   FC,
   isValidElement,
+  ReactElement,
   ReactNode,
   useEffect,
   useMemo,
@@ -326,3 +327,18 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
     </MatchContext.Provider>
   );
 };
+
+/**
+ * Получение активного попаута по nav/id свойству
+ * @param popout имя активного попаута
+ * @param elements возможные попауты
+ * @returns активный попаут
+ */
+export function matchPopout(
+  popout: string | null,
+  elements: ReactElement[]
+): ReactElement | null {
+  return popout
+    ? elements.find((node) => getNavID(node) === popout) ?? null
+    : null;
+}
