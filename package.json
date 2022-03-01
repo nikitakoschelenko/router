@@ -22,8 +22,8 @@
     "/lib"
   ],
   "scripts": {
-    "prebuild": "rimraf lib/",
-    "build": "microbundle --jsx React.createElement --no-sourcemap --compress"
+    "build": "microbundle --jsx React.createElement --no-sourcemap --compress",
+    "watch": "microbundle watch --jsx React.createElement"
   },
   "devDependencies": {
     "@types/react": "^17.0.39",
@@ -42,7 +42,6 @@
     "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "rimraf": "^3.0.2",
     "typescript": "^4.5.5"
   },
   "peerDependencies": {
