@@ -18,46 +18,59 @@ import { history, State } from './utils/history';
 import { deserialize } from './utils/deserialize';
 import { NavNodeID, NavTransitionID } from './utils/navs';
 
+function getParams<T>(): T {
+  return (Object.fromEntries(
+    new URLSearchParams(
+      history.location.search.slice(1)
+    ) as unknown as Iterable<any>
+  ) ?? {}) as T;
+}
+
 /**
  * Хук для получения параметров
  */
 export function useParams<T extends StringDict>(): T {
-  let rerender = useState<unknown>()[1];
-
-  let params = useMemo(
-    () =>
-      Object.fromEntries(
-        new URLSearchParams(
-          history.location.search.slice(1)
-        ) as unknown as Iterable<any>
-      ) ?? {},
-    [history.location.search]
-  );
+  let [params, setParams] = useState<StringDict>(getParams);
 
   useEffect(() => {
-    return history.listen(rerender);
+    return history.listen(() => setParams(getParams));
   }, []);
 
   return params as T;
+}
+
+function getMeta<T>(): T {
+  return ((history.location.state as State<T>)?.meta ?? {}) as T;
 }
 
 /**
  * Хук для получения метаданных
  */
 export function useMeta<T extends AnyDict>(): T {
-  let meta: AnyDict = useMemo(
-    () => (history.location.state as State<T>)?.meta ?? {},
-    []
-  );
+  let [meta, setMeta] = useState<AnyDict>(getMeta);
+
+  useEffect(() => {
+    return history.listen(() => setMeta(getMeta));
+  }, []);
 
   return meta as T;
+}
+
+function getLocation(): Location {
+  return history.location;
 }
 
 /**
  * Хук для получения текущей локации
  */
 export function useLocation(): Location {
-  return history.location;
+  let [location, setLocation] = useState<Location>(getLocation);
+
+  useEffect(() => {
+    return history.listen(() => setLocation(getLocation));
+  }, []);
+
+  return location;
 }
 
 /**
