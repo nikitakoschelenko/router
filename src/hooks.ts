@@ -7,7 +7,7 @@ import {
   useMemo,
   useState
 } from 'react';
-import { Location } from 'history';
+import { Action, Location, Update } from 'history';
 import { Platform, SizeType, useAdaptivity, VKCOM } from '@vkontakte/vkui';
 
 import bridge from '@vkontakte/vk-bridge';
@@ -50,7 +50,9 @@ export function useMeta<T extends AnyDict>(): T {
   let [meta, setMeta] = useState<AnyDict>(getMeta);
 
   useEffect(() => {
-    return history.listen(() => setMeta(getMeta));
+    return history.listen(({ action }: Update) => {
+      if ([Action.Push, Action.Replace].includes(action)) setMeta(getMeta);
+    });
   }, []);
 
   return meta as T;
