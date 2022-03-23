@@ -172,10 +172,19 @@ function renderRoute(
 }
 
 export type MatchContextValue = MatchConfig & {
+  /**
+   * Промаркированные дети
+   */
   root: ReactNode;
+
+  /**
+   * Слои навигации
+   */
   navs: Nav[];
 
-  // required
+  /**
+   * Стиль навигации
+   */
   style: Style;
 };
 

@@ -75,6 +75,15 @@ export function useLocation(): Location {
   return location;
 }
 
+let initialLocation: globalThis.Location = location;
+
+/**
+ * Хук для получения начальной локации при запуске
+ */
+export function useInitialLocation(): globalThis.Location {
+  return initialLocation;
+}
+
 /**
  * Хук для получения активных свойств слоёв навигации
  */
