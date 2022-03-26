@@ -40,7 +40,9 @@ function createNodeID(node: ReactNode): string {
   let key: string = '';
 
   deepForEach(node, (node) => {
-    if (isValidElement(node)) key += node.key;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (isValidElement(node)) key += node.key ?? node.type.name;
   });
 
   return key;
