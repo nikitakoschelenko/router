@@ -98,17 +98,22 @@ export function useDeserialized(): Record<'view' | 'panel' | string, string> {
 
   let deserialized: StringDict = useMemo(
     () => deserialize(root, history.location.pathname),
-    [history.location.pathname]
+    [root, history.location.pathname]
   );
 
-  let rootNodeID: NavNodeID =
-    navs.find(({ type }) => type === 'root' || type === 'epic')?.nodeID ?? '/';
-  let view: NavTransitionID = deserialized[rootNodeID] ?? '/';
+  let { view, panel } = useMemo(() => {
+    let rootNodeID: NavNodeID =
+      navs.find(({ type }) => type === 'root' || type === 'epic')?.nodeID ??
+      '/';
+    let view: NavTransitionID = deserialized[rootNodeID] ?? '/';
 
-  let viewNodeID: NavNodeID =
-    navs.find(({ type, navID }) => type === 'view' && navID === view)?.nodeID ??
-    '/';
-  let panel: NavTransitionID = deserialized[viewNodeID] ?? '/';
+    let viewNodeID: NavNodeID =
+      navs.find(({ type, navID }) => type === 'view' && navID === view)
+        ?.nodeID ?? '/';
+    let panel: NavTransitionID = deserialized[viewNodeID] ?? '/';
+
+    return { view, panel };
+  }, [root, navs, history.location.pathname]);
 
   return {
     ...deserialized,
