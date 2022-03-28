@@ -20,12 +20,11 @@ import {
   Epic as VKUIEpic
 } from '@vkontakte/vkui';
 
-import { NODE_ID_ATTRIBUTE } from './constants';
 import { View, Root, Epic } from './components';
 import { useStyle } from './hooks';
 import { AnyDict, FallbackMeta, StringDict } from './types';
 import { deserialize } from './utils/deserialize';
-import { getNavID, getNodeID } from './utils/node';
+import { getNavID, getNodeID, NODE_ID_ATTRIBUTE } from './utils/node';
 import {
   createNav,
   Nav,
