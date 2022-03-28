@@ -211,7 +211,7 @@ export enum Style {
 export type MatchConfig = {
   /**
    * Стиль навигации.
-   * По умолчанию определяется автоматически (хуки useStyle и useVKPlatform)
+   * По умолчанию берётся платформа, прокинутая через ConfigProvider
    */
   style?: Style;
 

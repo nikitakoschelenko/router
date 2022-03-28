@@ -8,15 +8,7 @@ import {
   useState
 } from 'react';
 import { Action, Location, Update } from 'history';
-import {
-  Platform,
-  SizeType,
-  VKCOM,
-  useAdaptivity,
-  platform as getPlatform
-} from '@vkontakte/vkui';
-
-import bridge from '@vkontakte/vk-bridge';
+import { Platform, ConfigProviderContext } from '@vkontakte/vkui';
 
 import { AnyDict, StringDict } from './types';
 import { MatchContext, Style } from './match';
@@ -149,56 +141,10 @@ export function useActionRef(handler?: (e: Element | null) => void) {
 }
 
 /**
- * Хук для определения платформы.
- * Сначала определяет, что это десктоп по размерам экрана.
- * Если это не так, то перед нами мобильный.
- * Если доступен bridge, проверяем мобильную платформу по параметрам запуска (теперь desktop_web это IOS, VKCOM не подходит по размерам экрана).
- * В ином случае определяем по user-agent, IOS ли это. Если нет, то Android.
- */
-export function useVKPlatform(): Platform {
-  let { sizeX, viewWidth } = useAdaptivity();
-
-  let platform: Platform = useMemo(() => {
-    let desktop: boolean = viewWidth
-      ? sizeX === SizeType.REGULAR
-      : document.body.clientWidth >= 768;
-    if (desktop) return Platform.VKCOM;
-
-    if (bridge.isEmbedded()) {
-      let params: URLSearchParams = new URLSearchParams(location.search);
-      let vkPlatformParam: string | null = params.get('vk_platform');
-
-      if (vkPlatformParam) {
-        let vkPlatform: Platform | undefined = {
-          desktop_web: Platform.IOS, // this is not desktop, screen too small
-          mobile_android: Platform.ANDROID,
-          mobile_android_messenger: Platform.ANDROID,
-          mobile_ipad: Platform.IOS,
-          mobile_iphone: Platform.IOS,
-          mobile_iphone_messenger: Platform.IOS,
-          mobile_web: Platform.IOS,
-          android_external: Platform.ANDROID,
-          iphone_external: Platform.IOS,
-          ipad_external: Platform.IOS,
-          web_external: Platform.VKCOM,
-          mvk_external: Platform.IOS
-        }[vkPlatformParam];
-
-        if (vkPlatform) return vkPlatform;
-      }
-    }
-
-    return getPlatform() as Platform;
-  }, [viewWidth, sizeX, document.body.clientWidth]);
-
-  return platform;
-}
-
-/**
  * Хук для получения текущего стиля навигации
  */
 export function useStyle(): Style {
-  let platform: Platform = useVKPlatform();
+  let { platform } = useContext(ConfigProviderContext);
 
-  return platform === VKCOM ? Style.DESKTOP : Style.MOBILE;
+  return platform === Platform.VKCOM ? Style.DESKTOP : Style.MOBILE;
 }
