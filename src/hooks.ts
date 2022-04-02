@@ -14,7 +14,6 @@ import { AnyDict, StringDict } from './types';
 import { MatchContext, Style } from './match';
 import { history, State } from './utils/history';
 import { deserialize } from './utils/deserialize';
-import { NavNodeID, NavTransitionID } from './utils/navs';
 
 function getParams<T>(): T {
   return (Object.fromEntries(
@@ -89,20 +88,20 @@ export function useDeserialized(): Record<'view' | 'panel' | string, string> {
   let { root, navs } = useContext(MatchContext);
 
   let deserialized: StringDict = useMemo(
-    () => deserialize(root, history.location.pathname),
+    () => deserialize(root, navs, history.location.pathname),
     [root, history.location.pathname]
   );
 
   let { view, panel } = useMemo(() => {
-    let rootNodeID: NavNodeID =
+    let rootNodeID: string =
       navs.find(({ type }) => type === 'root' || type === 'epic')?.nodeID ??
       '/';
-    let view: NavTransitionID = deserialized[rootNodeID] ?? '/';
+    let view: string = deserialized[rootNodeID] ?? '/';
 
-    let viewNodeID: NavNodeID =
+    let viewNodeID: string =
       navs.find(({ type, navID }) => type === 'view' && navID === view)
         ?.nodeID ?? '/';
-    let panel: NavTransitionID = deserialized[viewNodeID] ?? '/';
+    let panel: string = deserialized[viewNodeID] ?? '/';
 
     return { view, panel };
   }, [root, navs, history.location.pathname]);

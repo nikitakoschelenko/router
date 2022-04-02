@@ -22,17 +22,11 @@ import {
 
 import { View, Root, Epic } from './components';
 import { useStyle } from './hooks';
-import { AnyDict, FallbackMeta, StringDict } from './types';
+import { AnyDict, StringDict } from './types';
 import { deserialize } from './utils/deserialize';
 import { getNavID, getNodeID, NODE_ID_ATTRIBUTE } from './utils/node';
-import {
-  createNav,
-  Nav,
-  NavNodeID,
-  NavTransitionID,
-  NavType
-} from './utils/navs';
-import { history, State } from './utils/history';
+import { createNav, Nav, NavType } from './utils/navs';
+import { history, State, FallbackMeta } from './utils/history';
 import { setLocation } from './utils/bridge';
 
 function createNodeID(node: ReactNode): string {
@@ -110,12 +104,10 @@ function extractLayoutsAsNavs(root: ReactNode): Nav[] {
         return node;
     }
 
-    let availableTransitionIDs: NavTransitionID[] = Children.toArray(
-      node.props.children
-    )
-      .map((child) => isValidElement(child) && getNavID(child.props))
-      .filter((child) => child) as NavTransitionID[];
-    let nodeID: NavNodeID = node.props[NODE_ID_ATTRIBUTE];
+    let availableTransitionIDs: string[] = Children.toArray(node.props.children)
+      .map((child) => isValidElement(child) && getNavID(child))
+      .filter((navID) => !!navID) as string[];
+    let nodeID: string = node.props[NODE_ID_ATTRIBUTE];
 
     items.unshift(createNav(type, navID, availableTransitionIDs, nodeID));
   });
@@ -124,12 +116,12 @@ function extractLayoutsAsNavs(root: ReactNode): Nav[] {
 }
 
 function renderRoute(
-  route: string,
+  pathname: string,
   root: ReactNode,
   navs: Nav[],
-  config: Omit<MatchConfig, 'plugins'>
+  style: Style
 ): ReactNode {
-  let deserialized: StringDict = deserialize(root, route);
+  let deserialized: StringDict = deserialize(root, navs, pathname);
 
   return deepMap(root, (node: ReactNode) => {
     if (!isValidElement(node)) return node;
@@ -137,17 +129,17 @@ function renderRoute(
     let nodeID: string | undefined = getNodeID(node);
     if (!nodeID) return node;
 
-    let value: string = deserialized[nodeID] ?? '/';
+    let active: string = deserialized[nodeID] ?? '/';
     let props: AnyDict = {
       ...node.props
     };
 
     switch (node.type) {
       case View:
-        props.activePanel = value;
+        props.activePanel = active;
 
         // swipeback on mobile
-        if (config.style === Style.MOBILE) {
+        if (style === Style.MOBILE) {
           let nav: Nav = navs.find((nav) => nav.nodeID === nodeID)!;
 
           (props as ViewProps).history = nav.transitions;
@@ -157,11 +149,11 @@ function renderRoute(
         break;
 
       case Root:
-        props.activeView = value;
+        props.activeView = active;
         break;
 
       case Epic:
-        props.activeStory = value;
+        props.activeStory = active;
         break;
 
       default:
@@ -236,7 +228,13 @@ export type MatchConfig = {
 /**
  * Главный компонент роутера, в него оборачивается вся структура
  */
-export const Match: FC<MatchConfig> = ({ children, ...config }) => {
+export const Match: FC<MatchConfig> = ({
+  children,
+  style: _style,
+  initialURL,
+  fallbackURL,
+  disableSetLocation
+}) => {
   let rerender = useState<unknown>()[1];
   let frender = useRef(true);
 
@@ -244,11 +242,11 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
   let navs: Nav[] = useMemo(() => extractLayoutsAsNavs(root), []);
 
   let route: string = frender.current
-    ? config.initialURL ?? history.location.pathname
+    ? initialURL ?? history.location.pathname
     : history.location.pathname;
 
   // set or detect style
-  config.style = config.style ?? useStyle();
+  let style: Style = _style ?? useStyle();
 
   // listen events and rerender
   useEffect(() => {
@@ -256,24 +254,29 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
       let state: State<any> | undefined = location.state as
         | State<any>
         | undefined;
-      let deserialized: StringDict = deserialize(root, location.pathname);
+      let deserialized: StringDict = deserialize(root, navs, location.pathname);
       let keys: string[] = Object.keys(deserialized);
 
       // not found
       if (keys.length === 0) {
         console.warn('[router] route not found.');
 
-        if (config.fallbackURL)
-          return history.replace(config.fallbackURL, {
-            forcePush: true,
+        if (fallbackURL) {
+          if (state?.meta?.retry > 0)
+            return console.error('[router] fallback route not found.');
+
+          return history.replace(fallbackURL, {
+            force: true,
             meta: {
               from: createPath(location),
+              retry: state?.meta?.retry ? state?.meta?.retry + 1 : 1,
               meta: state?.meta
             }
           } as State<FallbackMeta<any>>);
+        }
       }
 
-      if (state?.forcePush) action = Action.Push;
+      if (state?.force) action = Action.Push;
 
       navs.forEach(({ nodeID, transitions }) => {
         let activeNavID: string = deserialized[nodeID] ?? '/';
@@ -297,19 +300,20 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
       });
 
       // set parent page location hash with vk bridge
-      if (!config.disableSetLocation) setLocation(location);
+      if (!disableSetLocation) setLocation(location);
 
       rerender({});
     };
 
     let unlisten: VoidFunction = history.listen(listener);
 
-    if (config.initialURL) {
-      route = config.initialURL;
-      history.replace(config.initialURL);
+    let nextURL: string = createPath(history.location);
+    if (initialURL) {
+      if (initialURL !== nextURL) {
+        route = initialURL;
+        history.replace(initialURL);
+      }
     } else if (history.location.pathname !== '/') {
-      let nextURL: string = createPath(history.location);
-
       history.replace('/');
       history.push(nextURL);
     }
@@ -328,12 +332,15 @@ export const Match: FC<MatchConfig> = ({ children, ...config }) => {
         {
           root,
           navs,
-          ...config
+          style,
+          initialURL,
+          fallbackURL,
+          disableSetLocation
         } as MatchContextValue
       }
     >
       {/* render current route */}
-      {renderRoute(route, root, navs, config)}
+      {renderRoute(route, root, navs, style)}
     </MatchContext.Provider>
   );
 };

@@ -1,9 +1,14 @@
 import { Children, isValidElement, ReactNode } from 'react';
 
 import { StringDict } from '../types';
+import { Nav } from './navs';
 import { getNavID, getNodeID } from './node';
 
-export function deserialize(root: ReactNode, pathname: string): StringDict {
+export function deserialize(
+  root: ReactNode,
+  navs: Nav[],
+  pathname: string
+): StringDict {
   let deserialized: Record<string, string> = {};
   let chunks: string[] = pathname.split(/(?=\/)/);
 
@@ -16,8 +21,14 @@ export function deserialize(root: ReactNode, pathname: string): StringDict {
     let parentNodeID: string | undefined = getNodeID(parent);
 
     if (navID && parentNodeID && currentWorkID === navID) {
-      deserialized[parentNodeID] = navID;
-      currentWorkID = chunks.shift();
+      let parentNav: Nav | undefined = navs.find(
+        (nav) => nav.nodeID === parentNodeID
+      );
+
+      if (parentNav?.availableTransitionIDs.includes(navID)) {
+        deserialized[parentNodeID] = navID;
+        currentWorkID = chunks.shift();
+      }
     }
 
     if (node.props.children)

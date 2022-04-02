@@ -1,30 +1,26 @@
 export type NavType = 'view' | 'root' | 'epic';
-export type NavID = string;
-export type NavTransitionID = string;
-export type NavTransition = string;
-export type NavNodeID = string;
 
 export type Nav = {
   type: NavType;
-  navID: NavID;
-  availableTransitionIDs: NavTransitionID[];
-  transitions: NavTransition[];
-  nodeID: NavNodeID;
+  navID: string;
+  nodeID: string;
+  availableTransitionIDs: string[];
+  transitions: string[];
 };
 
 export function createNav(
   type: NavType,
-  navID: NavID,
-  availableTransitionIDs: NavTransitionID[],
-  nodeID: NavNodeID
+  navID: string,
+  availableTransitionIDs: string[],
+  nodeID: string
 ): Nav {
   let firstTransition: string = availableTransitionIDs[0];
 
   return {
     type,
     navID,
-    availableTransitionIDs,
     nodeID,
+    availableTransitionIDs,
     transitions: [firstTransition]
   };
 }
