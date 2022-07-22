@@ -10,6 +10,8 @@ import {
 import { Action, Location, Update } from 'history';
 import { Platform, ConfigProviderContext } from '@vkontakte/vkui';
 
+let initialLocation: globalThis.Location = location;
+
 import { AnyDict, StringDict } from './types';
 import { MatchContext, Style } from './match';
 import { history, State } from './utils/history';
@@ -71,8 +73,6 @@ export function useLocation(): Location {
 
   return location;
 }
-
-let initialLocation: globalThis.Location = location;
 
 /**
  * Хук для получения начальной локации при запуске
