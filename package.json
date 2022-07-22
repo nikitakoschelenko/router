@@ -26,32 +26,32 @@
     "watch": "microbundle watch --jsx React.createElement"
   },
   "devDependencies": {
-    "@types/react": "^17.0.42",
-    "@types/react-dom": "^17.0.14",
-    "@typescript-eslint/eslint-plugin": "^5.16.0",
-    "@typescript-eslint/parser": "^5.16.0",
-    "@vkontakte/icons": "^1.145.1",
-    "@vkontakte/vk-bridge": "^2.5.3",
-    "@vkontakte/vkui": "^4.28.0",
-    "eslint": "^8.11.0",
+    "@types/react": "^17.0.47",
+    "@types/react-dom": "^17.0.17",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "@vkontakte/icons": "^1.179.0",
+    "@vkontakte/vk-bridge": "^2.7.0",
+    "@vkontakte/vkui": "^4.33.4",
+    "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prefer-let": "^3.0.1",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.29.4",
-    "microbundle": "^0.14.2",
-    "prettier": "^2.6.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "typescript": "^4.6.2"
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.30.1",
+    "microbundle": "^0.15.0",
+    "prettier": "^2.7.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^4.7.4"
   },
   "peerDependencies": {
-    "@vkontakte/vk-bridge": "^2.5.3",
-    "@vkontakte/vkui": "^4.28.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "@vkontakte/vk-bridge": "^2.7.0",
+    "@vkontakte/vkui": "^4.33.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "dependencies": {
     "history": "^5.3.0",
-    "react-children-utilities": "^2.7.0"
+    "react-children-utilities": "^2.8.0"
   }
 }
