@@ -313,7 +313,10 @@ export const Match: FC<MatchConfig> = ({
         route = initialURL;
         history.replace(initialURL);
       }
-    } else if (history.location.pathname !== '/') {
+    } else if (history.location.search.slice(1)) {
+      history.push(history.location.pathname);
+      history.push(nextURL);
+    } else if (history.location.pathname.slice(1)) {
       history.replace('/');
       history.push(nextURL);
     }
