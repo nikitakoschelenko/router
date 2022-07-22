@@ -314,7 +314,7 @@ export const Match: FC<MatchConfig> = ({
         history.replace(initialURL);
       }
     } else if (history.location.search.slice(1)) {
-      history.push(history.location.pathname);
+      history.replace(history.location.pathname);
       history.push(nextURL);
     } else if (history.location.pathname.slice(1)) {
       history.replace('/');
