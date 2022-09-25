@@ -1,6 +1,6 @@
 {
   "name": "@itznevikat/router",
-  "version": "0.1.0-beta23",
+  "version": "0.1.0-beta27",
   "private": false,
   "description": "📦 Многофункциональный роутер для приложений на React и VKUI",
   "source": "src/index.ts",
@@ -26,29 +26,29 @@
     "watch": "microbundle watch --jsx React.createElement"
   },
   "devDependencies": {
-    "@types/react": "^17.0.47",
-    "@types/react-dom": "^17.0.17",
-    "@typescript-eslint/eslint-plugin": "^5.30.7",
-    "@typescript-eslint/parser": "^5.30.7",
-    "@vkontakte/icons": "^1.179.0",
+    "@types/react": "^18.0.21",
+    "@types/react-dom": "^18.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.38.0",
+    "@typescript-eslint/parser": "^5.38.0",
+    "@vkontakte/icons": "^1.193.0",
     "@vkontakte/vk-bridge": "^2.7.0",
-    "@vkontakte/vkui": "^4.33.4",
-    "eslint": "^8.20.0",
+    "@vkontakte/vkui": "^4.37.3",
+    "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prefer-let": "^3.0.1",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.30.1",
-    "microbundle": "^0.15.0",
+    "eslint-plugin-react": "^7.31.8",
+    "microbundle": "^0.15.1",
     "prettier": "^2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.8.3"
   },
   "peerDependencies": {
     "@vkontakte/vk-bridge": "^2.7.0",
-    "@vkontakte/vkui": "^4.33.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@vkontakte/vkui": "^4.37.3",
+    "react": ">=17",
+    "react-dom": ">=17"
   },
   "dependencies": {
     "history": "^5.3.0",
