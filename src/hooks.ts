@@ -38,7 +38,7 @@ export function useParams<T extends StringDict>(): T {
   return params as T;
 }
 
-function getMeta<T>(): T {
+function getMeta<T extends AnyDict>(): T {
   return ((history.location.state as State<T>)?.meta ?? {}) as T;
 }
 

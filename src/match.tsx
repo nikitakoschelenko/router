@@ -223,6 +223,10 @@ export type MatchConfig = {
    * По умолчанию выключено, событие отправляется
    */
   disableSetLocation?: boolean;
+  /**
+   * Переданный в Match children для использования в качестве Root элемента
+   */
+  children?: ReactNode;
 };
 
 /**
